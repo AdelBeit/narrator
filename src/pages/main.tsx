@@ -12,6 +12,7 @@ const Main = () => {
    const [error, setError] = useState<ApiError | null>(null);
    const [passage, setPassage] = useState([]);
    const [voices, setVoices] = useState([]);
+   const [currentVoice, setCurrentVoice] = useState("21m00Tcm4TlvDq8ikWAM");
    const [characters, setCharacters] = useState<{ [key: string]: string }[]>([{ "Voice": "21m00Tcm4TlvDq8ikWAM" }]);
    const apiKey = process.env.NEXT_PUBLIC_elevenlabs_api_key;
    const apiKey2 = process.env.NEXT_PUBLIC_elevenlabs_api_key2;
@@ -90,7 +91,8 @@ const Main = () => {
       // Handle form submission logic here
       if (passage.length < 2) {
          // @ts-ignore
-         fetchAudio(apiKey2!, characters[0]['Voice'], passage[0].text);
+         fetchAudio(apiKey2!, currentVoice, passage[0].text);
+         // fetchAudio(apiKey2!, characters[0]['Voice'], passage[0].text);
       }
       else {
 
@@ -103,7 +105,10 @@ const Main = () => {
    // }, [currentVoice]);
 
    const updateCharacters = (index: number, name: string) => {
-      // setCharacters(prevState => ())
+      const newArray = [...characters];
+      const charName = Object.keys(characters[index])[0];
+      // newArray[index] = { name: voices[] };
+      return newArray;
    }
 
    return (
@@ -111,7 +116,7 @@ const Main = () => {
          <textarea className="block input h-[500px] w-[500px]" onChange={handleTextAreaChange} />
          <div className='flex flex-col gap-5'>
             <div className='characters min-h-100 border-2'>
-               <h1 className='block mb-5 font-bold'>Characters' voices:</h1>
+               <h1 className='block mb-5 font-bold'>Character voices:</h1>
                <div className='flex flex-column gap-5'>
                   {characters.map((character, _i) => {
                      const characterName = Object.keys(character)[0];
@@ -120,7 +125,10 @@ const Main = () => {
                         <div key={_i} className='flex flex-row gap-2 justify-between'>
                            <label htmlFor={"voice_" + _i}>{characterName}</label>
                            {/* @ts-ignore */}
-                           <select id={"voice_" + _i} className='dropdown' value={characters[characterName]} onChange={(e) => updateCharacters(_i, characterName)}>
+                           <select id={"voice_" + _i} className='dropdown' value={characters[characterName]}
+                              onChange={(e) => setCurrentVoice(e.target.value)}
+                           // onChange={(e) => updateCharacters(_i, characterName)}
+                           >
                               {voices.map((voice, index) => (
                                  // @ts-ignore
                                  <option key={index} value={voice.voiceID}>
@@ -146,7 +154,7 @@ const Main = () => {
                            link.download = 'audiobook.mp3';
                            link.click();
                         }}
-                        className="btn"
+                        className="btn block"
                      >
                         {isLoading ? "Loading" : "Download"}
                      </button>
@@ -162,7 +170,7 @@ const Main = () => {
                            link.download = 'audiobook.mp3';
                            link.click();
                         }}
-                        className="btn"
+                        className="btn block"
                      >
                         Download
                      </button>

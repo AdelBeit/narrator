@@ -14,6 +14,7 @@ const Main = () => {
    const [voices, setVoices] = useState([]);
    const [currentVoice, setCurrentVoice] = useState("21m00Tcm4TlvDq8ikWAM");
    const [characters, setCharacters] = useState<{ [key: string]: string }[]>([{ "Voice": "21m00Tcm4TlvDq8ikWAM" }]);
+   // const [characters, setCharacters] = useState<string[][]>([["Voice","21m00Tcm4TlvDq8ikWAM"]]);
    const apiKey = process.env.NEXT_PUBLIC_elevenlabs_api_key;
    const apiKey2 = process.env.NEXT_PUBLIC_elevenlabs_api_key2;
 
@@ -105,6 +106,10 @@ const Main = () => {
    // }, [currentVoice]);
 
    const updateCharacters = (index: number, name: string) => {
+      const i = 1;
+      const n = 'adele';
+      // voices = [{name:hi,voiceid:9},{name:ok,voiceid:1}]
+      // characters = [{don:9},{}] , [[don,9],[potter,1]]
       const newArray = [...characters];
       const charName = Object.keys(characters[index])[0];
       // newArray[index] = { name: voices[] };
@@ -112,75 +117,81 @@ const Main = () => {
    }
 
    return (
-      <div className='_container p-10 gap-3 w-full h-full flex flex-row justify-between'>
-         <textarea className="block input h-[500px] w-[500px]" onChange={handleTextAreaChange} />
-         <div className='flex flex-col gap-5'>
-            <div className='characters min-h-100 border-2'>
-               <h1 className='block mb-5 font-bold'>Character voices:</h1>
-               <div className='flex flex-column gap-5'>
-                  {characters.map((character, _i) => {
-                     const characterName = Object.keys(character)[0];
-                     console.log(characters, voices);
-                     return (
-                        <div key={_i} className='flex flex-row gap-2 justify-between'>
-                           <label htmlFor={"voice_" + _i}>{characterName}</label>
-                           {/* @ts-ignore */}
-                           <select id={"voice_" + _i} className='dropdown' value={characters[characterName]}
-                              onChange={(e) => setCurrentVoice(e.target.value)}
-                           // onChange={(e) => updateCharacters(_i, characterName)}
-                           >
-                              {voices.map((voice, index) => (
-                                 // @ts-ignore
-                                 <option key={index} value={voice.voiceID}>
-                                    {// @ts-ignore
-                                       voice.name}
-                                 </option>
-                              ))}
-                           </select>
-                        </div>)
-                  }
-                  )}
+      <div className='_container p-10 gap-5 w-full h-full flex flex-col justify-center items-center'>
+         <h1 className='text-4xl '>The Narrator</h1>
+         <div className='gap-[100px] w-full h-full flex flex-row justify-center'>
+            <textarea className="block input h-[500px] w-[500px]" onChange={handleTextAreaChange} />
+            <div className='flex flex-col gap-5'>
+               <div className='characters min-h-100'>
+                  <h1 className='block mb-5 font-bold'>Character voices:</h1>
+                  <div className='flex flex-column gap-5'>
+                     {characters.map((character, _i) => {
+                        const characterName = Object.keys(character)[0];
+                        console.log(characters, voices);
+                        return (
+                           <div key={_i} className='flex flex-row gap-2 justify-between'>
+                              <label htmlFor={"voice_" + _i}>{characterName}</label>
+                              {/* @ts-ignore */}
+                              <select id={"voice_" + _i} className='dropdown' value={characters[characterName]}
+                                 onChange={(e) => setCurrentVoice(e.target.value)}
+                              // onChange={(e) => updateCharacters(_i, characterName)}
+                              /**
+                               * updateCharacters(_i,)
+                               */
+                              >
+                                 {voices.map((voice, index) => (
+                                    // @ts-ignore
+                                    <option key={index} value={voice.voiceID}>
+                                       {// @ts-ignore
+                                          voice.name}
+                                    </option>
+                                 ))}
+                              </select>
+                           </div>)
+                     }
+                     )}
+                  </div>
                </div>
+               <button className="btn block" onClick={handleSubmit}>Get Audio</button>
+               {
+                  audioData !== null ? (
+                     <div className='_audio flex flex-col gap-3 justify-center items-center'>
+                        <audio controls src={URL.createObjectURL(audioData?.audio)}></audio>
+                        <button
+                           onClick={() => {
+                              const link = document.createElement('a');
+                              link.href = URL.createObjectURL(audioData?.audio);
+                              link.download = 'audiobook.mp3';
+                              link.click();
+                           }}
+                           className="btn block"
+                        >
+                           {isLoading ? "Loading" : "Download"}
+                        </button>
+                     </div>
+                  ) : (
+                     <div className='_audio flex flex-col gap-3 justify-center items-center'>
+                        <audio controls></audio>
+                        <button
+                           disabled
+                           onClick={() => {
+                              const link = document.createElement('a');
+                              link.href = "";
+                              link.download = 'audiobook.mp3';
+                              link.click();
+                           }}
+                           className="btn block"
+                        >
+                           Download
+                        </button>
+                     </div>
+                  )
+               }
+
+
             </div>
-            <button className="btn block" onClick={handleSubmit}>Get Audio</button>
-            {
-               audioData !== null ? (
-                  <div className='_audio flex flex-col justify-center items-center'>
-                     <audio controls src={URL.createObjectURL(audioData?.audio)}></audio>
-                     <button
-                        onClick={() => {
-                           const link = document.createElement('a');
-                           link.href = URL.createObjectURL(audioData?.audio);
-                           link.download = 'audiobook.mp3';
-                           link.click();
-                        }}
-                        className="btn block"
-                     >
-                        {isLoading ? "Loading" : "Download"}
-                     </button>
-                  </div>
-               ) : (
-                  <div className='_audio flex flex-col justify-center items-center'>
-                     <audio controls></audio>
-                     <button
-                        disabled
-                        onClick={() => {
-                           const link = document.createElement('a');
-                           link.href = "";
-                           link.download = 'audiobook.mp3';
-                           link.click();
-                        }}
-                        className="btn block"
-                     >
-                        Download
-                     </button>
-                  </div>
-               )
-            }
 
-
-         </div>
-
+         </div >
       </div >
    );
 };
@@ -195,4 +206,11 @@ export default Main;
                   <li key={index}>{character}</li>
                ))}
             </ul>
+
+
+
+"Space," it says, "is big. Really big. You just won't believe how vastly, hugely, mind-bogglingly big it is. I mean, you may think it's a long way down the road to the chemist, but that's just peanuts to space, listen. And for total lack of a better word, huge swathes of it is completely and utterly empty. Vast stretches of nothingness, punctuated by tiny specks of matter, galaxies, stars, planets, and the occasional piece of space junk. It's mind-boggling, really. You can't wrap your head around the scale of it. It's like trying to comprehend infinity while standing at the edge of a bottomless pit. It just goes on and on and on, and it's both fascinating and terrifying at the same time."
+
+
+
             */}

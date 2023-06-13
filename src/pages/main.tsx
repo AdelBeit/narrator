@@ -14,7 +14,14 @@ const Main = () => {
    const [voices, setVoices] = useState([]);
    const [currentVoice, setCurrentVoice] = useState("21m00Tcm4TlvDq8ikWAM");
    const [characters, setCharacters] = useState<{ [key: string]: string }[]>([{ "Voice": "21m00Tcm4TlvDq8ikWAM" }]);
-   // const [characters, setCharacters] = useState<string[][]>([["Voice","21m00Tcm4TlvDq8ikWAM"]]);
+   /** const [characters, setCharacters] = useState<string[][]>([["Voice","21m00Tcm4TlvDq8ikWAM"]]);
+    setCharacters(p => { 
+            
+          const nstate = [...p];
+          const voiceID = 
+       nstate[_i][1] = 
+    })
+     */
    const apiKey = process.env.NEXT_PUBLIC_elevenlabs_api_key;
    const apiKey2 = process.env.NEXT_PUBLIC_elevenlabs_api_key2;
 
@@ -112,8 +119,7 @@ const Main = () => {
       // characters = [{don:9},{}] , [[don,9],[potter,1]]
       const newArray = [...characters];
       const charName = Object.keys(characters[index])[0];
-      // newArray[index] = { name: voices[] };
-      return newArray;
+
    }
 
    return (
